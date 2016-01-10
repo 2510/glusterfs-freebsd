@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PROVIDES: glusterfsd
+# PROVIDE: glusterfsd
 # REQUIRE: NETWORKING rpcbind
 # KEYWORD: shutdown
 
