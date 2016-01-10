@@ -24,9 +24,12 @@ def get_abi():
 
 def get_files(base_dir, uid=None, gid=None):
     manifest_files = {}
-    for root, _, files in os.walk(base_dir):
+    for root, dirs, files in os.walk(base_dir):
         rel_root = os.path.relpath(root, base_dir)
-        for name in files:
+        any = []
+        any.extend(files)
+        any.extend(dirs)
+        for name in any:
             path = os.path.join(root, name)
             rel_path = os.path.join(rel_root, name)
             if rel_path.startswith('./'):
