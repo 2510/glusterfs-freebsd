@@ -1,0 +1,7 @@
+.build
+.extract
+.local-install
+.prerequisites
+work
+install-root
+package

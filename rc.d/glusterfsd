@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. /etc/rc.subr
+
+name="glusterfsd"
+rcvar="glusterfsd_enable"
+
+pidfile="/var/run/${name}.pid"
+command="/usr/local/sbin/glusterfsd"
+command_args="--pid-file=\"${pidfile}\" --volfile=/usr/local/etc/glusterfs/glusterd.vol"
+
+load_rc_config "${name}"
+run_rc_command "$1"

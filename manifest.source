@@ -1,0 +1,13 @@
+{
+    "name": "glusterfs",
+    "version": "3.6.8",
+    "origin": "net/glusterfs",
+    "comment": "GlusterFS cluster file system.",
+    "desc": "GlusterFS cluster file system.",
+    "maintainer": "root@linkage.white-void.net",
+    "www": "https://www.gluster.org/",
+    "prefix": "/usr/local",
+    "deps": {
+        "python27": { "origin": "lang/python27" }
+     }
+}
