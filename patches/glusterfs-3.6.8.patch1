@@ -1,0 +1,50 @@
+diff -r --context glusterfs-3.6.8.orig/xlators/storage/posix/src/posix-helpers.c glusterfs-3.6.8/xlators/storage/posix/src/posix-helpers.c
+*** glusterfs-3.6.8.orig/xlators/storage/posix/src/posix-helpers.c	Wed Jan  6 20:16:52 2016
+--- glusterfs-3.6.8/xlators/storage/posix/src/posix-helpers.c	Mon Jan 11 07:53:21 2016
+***************
+*** 1408,1413 ****
+--- 1408,1414 ----
+  
+          pfd->fd = _fd;
+          pfd->dir = dir;
++         pfd->dir_eof = -1;
+  
+          ret = __fd_ctx_set (fd, this, (uint64_t) (long) pfd);
+          if (ret != 0) {
+diff -r --context glusterfs-3.6.8.orig/xlators/storage/posix/src/posix.c glusterfs-3.6.8/xlators/storage/posix/src/posix.c
+*** glusterfs-3.6.8.orig/xlators/storage/posix/src/posix.c	Wed Jan  6 20:16:52 2016
+--- glusterfs-3.6.8/xlators/storage/posix/src/posix.c	Mon Jan 11 07:53:14 2016
+***************
+*** 4895,4901 ****
+          } else {
+                  seekdir (dir, off);
+  #ifndef GF_LINUX_HOST_OS
+!                 if ((u_long)telldir(dir) != off && off != pfd->dir_eof) {
+                          gf_log (THIS->name, GF_LOG_ERROR,
+                                  "seekdir(0x%llx) failed on dir=%p: "
+                                  "Invalid argument (offset reused from "
+--- 4895,4901 ----
+          } else {
+                  seekdir (dir, off);
+  #ifndef GF_LINUX_HOST_OS
+!                 if ((u_long)telldir(dir) != off && (pfd->dir_eof != -1 && off != pfd->dir_eof)) {
+                          gf_log (THIS->name, GF_LOG_ERROR,
+                                  "seekdir(0x%llx) failed on dir=%p: "
+                                  "Invalid argument (offset reused from "
+***************
+*** 4969,4975 ****
+                          seekdir (dir, in_case);
+  #ifndef GF_LINUX_HOST_OS
+                          if ((u_long)telldir(dir) != in_case &&
+!                             in_case != pfd->dir_eof) {
+                                  gf_log (THIS->name, GF_LOG_ERROR,
+                                          "seekdir(0x%llx) failed on dir=%p: "
+                                          "Invalid argument (offset reused from "
+--- 4969,4975 ----
+                          seekdir (dir, in_case);
+  #ifndef GF_LINUX_HOST_OS
+                          if ((u_long)telldir(dir) != in_case &&
+!                             (pfd->dir_eof != -1 && in_case != pfd->dir_eof)) {
+                                  gf_log (THIS->name, GF_LOG_ERROR,
+                                          "seekdir(0x%llx) failed on dir=%p: "
+                                          "Invalid argument (offset reused from "

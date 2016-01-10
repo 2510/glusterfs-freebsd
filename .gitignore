@@ -1,6 +1,7 @@
 .build
 .extract
 .local-install
+.patch
 .prerequisites
 work
 install-root

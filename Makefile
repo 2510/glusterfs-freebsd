@@ -3,6 +3,7 @@ TARBALL=glusterfs-3.6.8.tar.gz
 WORK=$(.CURDIR)/work
 INSTALLTMP=$(WORK)/install-root
 REQUIRED_PACKAGES=bison python27 libtool
+PATCHES=glusterfs-3.6.8.patch1
 
 PACKAGE_NAME=$(TARBALL:.tar.gz=)
 EXTRACT_DIR=$(WORK)/$(TARBALL:.tar.gz=)
@@ -12,7 +13,7 @@ MANIFEST=$(WORK)/MANIFEST
 Q?=@
 
 all: build
-.PHONY: clean local-install fetch extract prerequisites build package
+.PHONY: clean local-install fetch extract patch prerequisites build package
 
 fetch: $(TARBALL)
 $(WORK)/$(TARBALL):
@@ -27,6 +28,14 @@ extract: .extract
 	$(Q)tar -Jxf "$(WORK)/$(TARBALL)" -C "$(WORK)"
 	$(Q)touch .extract
 
+patch: .patch
+.patch: .extract
+	$(Q)echo "Patching..."
+.for patch in $(PATCHES)
+	$(Q)( cd "$(WORK)" ; patch -p0 < "$(.CURDIR)/patches/$(p)" )
+.endfor
+	$(Q)touch .patch
+
 prerequisites: .prerequisites
 .prerequisites:
 .for prerequisite in $(REQUIRED_PACKAGES)
@@ -40,7 +49,7 @@ prerequisites: .prerequisites
 	$(Q)touch .prerequisites
 
 build: .build
-.build: .extract .prerequisites
+.build: .patch .prerequisites
 	$(Q)echo "Building..."
 	$(Q)( cd "$(EXTRACT_DIR)" && ./configure )
 	$(Q)rm -f "$(EXTRACT_DIR)/libtool"
@@ -50,7 +59,7 @@ build: .build
 
 clean:
 	$(Q)rm -rf "$(WORK)"
-	$(Q)rm -f .extract .build .local-install
+	$(Q)rm -f .extract .build .patch .local-install
 
 install:
 	$(Q)echo "Installing..."
