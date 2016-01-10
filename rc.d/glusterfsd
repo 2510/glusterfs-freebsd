@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# PROVIDES: glusterfsd
+# REQUIRE: NETWORKING rpcbind
+# KEYWORD: shutdown
+
 . /etc/rc.subr
 
 name="glusterfsd"
