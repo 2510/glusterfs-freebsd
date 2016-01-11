@@ -32,7 +32,7 @@ patch: .patch
 .patch: .extract
 	$(Q)echo "Patching..."
 .for patch in $(PATCHES)
-	$(Q)( cd "$(WORK)" ; patch -p0 < "$(.CURDIR)/patches/$(p)" )
+	$(Q)( cd "$(WORK)" ; patch -p0 < "$(.CURDIR)/patches/$(patch)" )
 .endfor
 	$(Q)touch .patch
 
