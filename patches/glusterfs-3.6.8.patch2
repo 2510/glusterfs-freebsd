@@ -1,0 +1,27 @@
+diff -r --context glusterfs-3.6.8.org/libglusterfs/src/iatt.h glusterfs-3.6.8/libglusterfs/src/iatt.h
+*** glusterfs-3.6.8.org/libglusterfs/src/iatt.h	2016-01-06 20:16:52.000000000 +0900
+--- glusterfs-3.6.8/libglusterfs/src/iatt.h	2016-01-18 22:57:31.918836898 +0900
+***************
+*** 258,265 ****
+          iatt->ia_uid        = stat->st_uid;
+          iatt->ia_gid        = stat->st_gid;
+  
+!         iatt->ia_rdev       = ia_makedev (major (stat->st_rdev),
+                                            minor (stat->st_rdev));
+  
+          iatt->ia_size       = stat->st_size;
+          iatt->ia_blksize    = stat->st_blksize;
+--- 258,270 ----
+          iatt->ia_uid        = stat->st_uid;
+          iatt->ia_gid        = stat->st_gid;
+  
+! 	/* st_rdev valid only if the file is character/block device */
+!         if (S_ISCHR(stat->st_mode) || S_ISBLK(stat->st_mode)) {
+!             iatt->ia_rdev   = ia_makedev (major (stat->st_rdev),
+                                            minor (stat->st_rdev));
++         } else {
++             iatt->ia_rdev   = ia_makedev(-1, -1);
++         }
+  
+          iatt->ia_size       = stat->st_size;
+          iatt->ia_blksize    = stat->st_blksize;
