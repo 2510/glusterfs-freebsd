@@ -40,9 +40,9 @@ prerequisites: .prerequisites
 .prerequisites:
 .for prerequisite in $(REQUIRED_PACKAGES)
 	$(Q)(\
-	  pkg info $(p) >/dev/null 2>/dev/null || ( \
-	    echo "Installing prerequisite $(p)..." ; \
-	    pkg install $(p) || ( echo "Prerequisite not satisfied." ; false ) \
+	  pkg info $(prerequisite) >/dev/null 2>/dev/null || ( \
+	    echo "Installing prerequisite $(prerequisite)..." ; \
+	    pkg install $(prerequisite) || ( echo "Prerequisite not satisfied." ; false ) \
 	  ) \
 	)
 .endfor
