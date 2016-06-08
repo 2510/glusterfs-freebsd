@@ -1,0 +1,55 @@
+diff --context -r glusterfs-3.6.8.org/xlators/storage/posix/src/posix.c glusterfs-3.6.8/xlators/storage/posix/src/posix.c
+*** glusterfs-3.6.8.org/xlators/storage/posix/src/posix.c	Wed Jan  6 20:16:52 2016
+--- glusterfs-3.6.8/xlators/storage/posix/src/posix.c	Wed Jun  8 20:23:06 2016
+***************
+*** 4872,4877 ****
+--- 4872,4878 ----
+          char                 *hpath = NULL;
+          int                   len = 0;
+          int                   ret = 0;
++         size_t                seek_index = 0;
+  
+          ret = posix_fd_ctx_get (fd, this, &pfd);
+          if (ret < 0) {
+***************
+*** 4894,4901 ****
+                  rewinddir (dir);
+          } else {
+                  seekdir (dir, off);
+  #ifndef GF_LINUX_HOST_OS
+!                 if ((u_long)telldir(dir) != off && off != pfd->dir_eof) {
+                          gf_log (THIS->name, GF_LOG_ERROR,
+                                  "seekdir(0x%llx) failed on dir=%p: "
+                                  "Invalid argument (offset reused from "
+--- 4895,4924 ----
+                  rewinddir (dir);
+          } else {
+                  seekdir (dir, off);
++ #ifdef __FreeBSD__
++                 if (telldir (dir) != off) {
++                     if (telldir (dir) != telldir (dir)) {
++                         gf_log (THIS->name, GF_LOG_ERROR, "Oops, no way to emulate seekdir");
++                         count = -1;
++                         errno = EINVAL;
++                         goto out;
++                     }
++                     gf_log (THIS->name, GF_LOG_DEBUG, "Emulating seekdir");
++                     rewinddir (dir);
++                     telldir(dir);
++                     while ((in_case = telldir(dir)) <= off) {
++                         entry = NULL;
++                         readdir_r (dir, (struct dirent *)entrybuf, &entry);
++                         if (entry == NULL) {
++                             gf_log (THIS->name, GF_LOG_ERROR, "seekdir emulation by readdir has failed (off=%llu, telldir=%llu, seek_index=%d)", off, telldir(dir), seek_index);
++                             count = -1;
++                             goto out;
++                         }
++                     }
++                 }
++ #endif
+  #ifndef GF_LINUX_HOST_OS
+!                 if ((u_long)telldir(dir) != off && (pfd->dir_eof != -1 && off != pfd->dir_eof)) {
+                          gf_log (THIS->name, GF_LOG_ERROR,
+                                  "seekdir(0x%llx) failed on dir=%p: "
+                                  "Invalid argument (offset reused from "
+Only in glusterfs-3.6.8/xlators/storage/posix/src: posix.c.orig
