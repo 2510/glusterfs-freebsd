@@ -52,4 +52,3 @@ diff --context -r glusterfs-3.6.8.org/xlators/storage/posix/src/posix.c glusterf
                           gf_log (THIS->name, GF_LOG_ERROR,
                                   "seekdir(0x%llx) failed on dir=%p: "
                                   "Invalid argument (offset reused from "
-Only in glusterfs-3.6.8/xlators/storage/posix/src: posix.c.orig
