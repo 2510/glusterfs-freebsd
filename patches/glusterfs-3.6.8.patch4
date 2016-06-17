@@ -1,0 +1,39 @@
+diff -r --context glusterfs-3.6.8.org/xlators/cluster/stripe/src/stripe.c glusterfs-3.6.8/xlators/cluster/stripe/src/stripe.c
+*** glusterfs-3.6.8.org/xlators/cluster/stripe/src/stripe.c	Wed Jan  6 20:16:52 2016
+--- glusterfs-3.6.8/xlators/cluster/stripe/src/stripe.c	Fri Jun 17 19:11:32 2016
+***************
+*** 3212,3217 ****
+--- 3212,3218 ----
+  
+          if (!callcnt) {
+                  op_ret = 0;
++                 op_errno = 0;
+  
+                  /* Keep extra space for filling in '\0's */
+                  vec = GF_CALLOC ((local->count * 2), sizeof (struct iovec),
+***************
+*** 3253,3258 ****
+--- 3254,3263 ----
+                                  op_ret += vec[count].iov_len;
+                                  count++;
+                          }
++                         /* A stripe returns ENOENT for EOF, which is not an error */
++                         if (local->replies[i].op_errno == ENOENT) {
++                                 op_errno = local->replies[i].op_errno;
++                         }
+                          GF_FREE (local->replies[i].vector);
+                  }
+  
+***************
+*** 3352,3357 ****
+--- 3357,3366 ----
+                                  op_errno = mlocal->replies[index].op_errno;
+                                  break;
+                          }
++                         /* A stripe returns ENOENT for EOF, which is not an error */
++                         if (mlocal->replies[index].op_errno == ENOENT) {
++                                 op_errno = mlocal->replies[index].op_errno;
++                         }
+                          /* TODO: handle the 'holes' within the read range
+                             properly */
+                          if (mlocal->replies[index].op_ret <

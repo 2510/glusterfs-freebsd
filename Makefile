@@ -51,7 +51,7 @@ prerequisites: .prerequisites
 build: .build
 .build: .patch .prerequisites
 	$(Q)echo "Building..."
-	$(Q)( cd "$(EXTRACT_DIR)" && ./configure )
+	$(Q)( cd "$(EXTRACT_DIR)" && CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure )
 	$(Q)rm -f "$(EXTRACT_DIR)/libtool"
 	$(Q)ln -s "/usr/local/bin/libtool" "$(EXTRACT_DIR)/libtool"
 	$(Q)( cd "$(EXTRACT_DIR)" && make )
