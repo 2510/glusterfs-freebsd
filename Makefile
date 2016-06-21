@@ -3,7 +3,7 @@ TARBALL=glusterfs-3.6.8.tar.gz
 WORK=$(.CURDIR)/work
 INSTALLTMP=$(WORK)/install-root
 REQUIRED_PACKAGES=bison python27 libtool
-PATCHES=glusterfs-3.6.8.patch1 glusterfs-3.6.8.patch2 glusterfs-3.6.8.patch3
+PATCHES=glusterfs-3.6.8.patch1 glusterfs-3.6.8.patch2 glusterfs-3.6.8.patch3 glusterfs-3.6.8.patch4
 
 PACKAGE_NAME=$(TARBALL:.tar.gz=)
 EXTRACT_DIR=$(WORK)/$(TARBALL:.tar.gz=)
